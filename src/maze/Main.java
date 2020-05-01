@@ -13,14 +13,17 @@ import maze.lib.*;
 import java.util.HashSet;
 
 public class Main extends Application {
+    private static boolean canGo = true;
     //graphics parameters
-    static Scene mainScene;
-    static GraphicsContext graphicsContext;
-    static int WIDTH = 1200;        //Ширина окна
-    static int HEIGHT = 900;        //Длина окна
-    static HashSet<String> currentlyActiveKeys;
+    private static Scene mainScene;
+    private static GraphicsContext graphicsContext;
+    private static int WIDTH = 1200;        //Ширина окна
+    private static int HEIGHT = 800;        //Длина окна
+    private static HashSet<String> currentlyActiveKeys;
+    static final long startNanoTime = System.nanoTime();
     //game objects
     static Map map;
+    static Player player;
 
     public static void main(String[] args) {
         launch(args);
@@ -38,10 +41,10 @@ public class Main extends Application {
 
         //инициализация игровых объектов
         map = new Map(10);       //игровая карта
+        player = new Player(80, 80);
 
         //обработчик нажатий клавиш с клавиатуры
         prepareActionHandlers();
-
         graphicsContext = canvas.getGraphicsContext2D();
 
         /*
@@ -49,7 +52,7 @@ public class Main extends Application {
          */
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                tickAndRender();    //отображение определенной кнопки
+                tickAndRender(currentNanoTime);    //отображение определенной кнопки
             }
         }.start();
 
@@ -75,31 +78,48 @@ public class Main extends Application {
         });
     }
 
-    private static void tickAndRender()
+    private static void tickAndRender(long currentNanoTime)
     {
+        double t = (currentNanoTime - startNanoTime) / 1000000000.0;
         // clear canvas
         graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
         for(int i = 0; i < map.getMapSize(); i++){
             for(int j = 0; j < map.getMapSize(); j++) {
                 graphicsContext.drawImage(map.getFields()[i][j].getFrame(), map.getFields()[i][j].getX(), map.getFields()[i][j].getY());
+                if((player.getX() == map.getFields()[i][j].getX()) && (player.getY() == map.getFields()[i][j].getY())){
+                    if(map.getFields()[i][j].isWall()){
+                        canGo = false;
+                    }
+                }
+                else {
+                    canGo = true;
+                }
             }
         }
-
-        if (currentlyActiveKeys.contains("LEFT")) {
-            //graphicsContext.drawImage(leftGreen, 64 ,64);
-        }
-        else
-        {
-            //graphicsContext.drawImage(left, 64 ,64);
+        if (!currentlyActiveKeys.contains("RIGHT") && !currentlyActiveKeys.contains("LEFT") && !currentlyActiveKeys.contains("UP")
+                && !currentlyActiveKeys.contains("DOWN")) {
+            graphicsContext.drawImage(player.getFrame(), player.getX() + 8, player.getY() - 10);
         }
 
-        if (currentlyActiveKeys.contains("RIGHT"))
-        {
-            //graphicsContext.drawImage(rightGreen, 320, 64);
+        if (currentlyActiveKeys.contains("UP") && canGo) {
+            player.Move(0, -1);
+            graphicsContext.drawImage(player.getFramesForward(t), player.getX() + 8, player.getY() - 10);
         }
-        else
-        {
-            //graphicsContext.drawImage(right, 320, 64);
+        else if (currentlyActiveKeys.contains("DOWN") && canGo) {
+            player.Move(0, 1);
+            System.out.println(player.getX() + " " + player.getY());
+            graphicsContext.drawImage(player.getFramesBack(t), player.getX() + 8, player.getY() - 10);
+        }
+        else if (currentlyActiveKeys.contains("LEFT") && canGo) {
+            player.Move(-1, 0);
+
+            graphicsContext.drawImage(player.getFramesLeft(t), player.getX(), player.getY() - 10);
+        }
+        else if (currentlyActiveKeys.contains("RIGHT") && canGo) {
+            player.Move(1, 0);
+            graphicsContext.drawImage(player.getFramesRight(t), player.getX(), player.getY() - 10);
+        }
+        else {
         }
     }
 

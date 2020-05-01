@@ -1,9 +1,4 @@
-/*
- * Абстрактный класс, отвечающий за расположение
- */
 package maze.lib;
-
-import javafx.scene.image.Image;
 
 public abstract class GameObject {
     //координаты объекта
@@ -17,8 +12,14 @@ public abstract class GameObject {
     public int getY() {
         return y;
     }
+    public void setX(int x){
+        this.x = x;
+    }
 
-    //abstract method
-    public abstract Image getFrame();                       //вернуть кадр
-    public abstract void setAnimation(String fileName);     //установить анимацию
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    //abstract methods
+    protected abstract void setAnimation(String nameImage);//установить анимацию
 }

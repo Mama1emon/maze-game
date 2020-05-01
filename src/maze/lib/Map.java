@@ -10,7 +10,7 @@ public class Map {
     private final int mapSize;
 
     public Map(int size) {
-        int destination = 90;
+        int destination = 80;
         this.fields = new Cell[size][size];
         this.mapSize = size;
         for(int i = 0; i < size; i++) {

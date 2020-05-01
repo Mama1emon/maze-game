@@ -5,27 +5,48 @@ import javafx.scene.image.Image;
 import java.io.File;
 
 public class Player extends Cell {
-    private Image[] framesForward;      //кадры движения ВПЕРЁД
-    private Image[] framesBack;         //кадры движения НАЗАД
-    private Image[] framesLeft;         //кадры движения ВЛЕВО
-    private Image[] framesRight;        //кадры движения ВПРАВО
-    private final double duration = 0.1;//частота смены
+    private int numberImages = 4; //количесвто изображений в анимации(фиксированное)
+
+    private Image[] framesForward = new Image[numberImages];//кадры движения ВПЕРЁД
+    private Image[] framesBack = new Image[numberImages];   //кадры движения НАЗАД
+    private Image[] framesLeft = new Image[numberImages];   //кадры движения ВЛЕВО
+    private Image[] framesRight = new Image[numberImages];  //кадры движения ВПРАВО
+    private final double duration = 0.1;                    //частота смены
+
 
     public Player(int x, int y) {
         super(x, y);
-        setAnimation("frames");
+        this.setAnimation("player");     //устанавливаем анимацию
+    }
+
+    //вернуть количество кадров
+    public int getNumberImages() {
+        return numberImages;
+    }
+    //установить количество кадров
+    public void setNumberImages(int numberImages) {
+        this.numberImages = numberImages;
     }
 
     //установить кадры при движении
     @Override
-    public void setAnimation(String fileName) {
-        this.setFramesForward(fileName + "Forward", 4);
-        this.setFramesBack(fileName+ "Back", 4);
-        this.setFramesLeft(fileName + "Left", 4);
-        this.setFramesRight(fileName + "Left", 4);
+    public void setAnimation(String nameImage) {
+        for (int i = 0; i < numberImages; i++) {
+            //подгрузка файлов
+            File imageForward = new File("src/maze/Pictures/YellowFlower/Forward/" + nameImage + i + ".png");
+            File imageBack = new File("src/maze/Pictures/YellowFlower/Back/" + nameImage + i + ".png");
+            File imageLeft = new File("src/maze/Pictures/YellowFlower/Left/" + nameImage + i + ".png");
+            File imageRight = new File("src/maze/Pictures/YellowFlower/Right/" + nameImage + i + ".png");
+
+            //установка кадров
+            this.framesForward[i] = new Image(imageForward.toURI().toString(), 64, 100, false, false);
+            this.framesBack[i] = new Image(imageBack.toURI().toString(), 64, 100, false, false);
+            this.framesLeft[i] = new Image(imageLeft.toURI().toString(), 92, 100, false, false);
+            this.framesRight[i] = new Image(imageRight.toURI().toString(), 92, 100, false, false);
+        }
     }
 
-    //возвращает кадры при движении
+    //возвращает определенный кадр(анимация движения)
     public Image getFramesForward(double time) {
         int index = (int)((time % (framesForward.length * duration)) / duration);
         return framesForward[index];
@@ -42,48 +63,12 @@ public class Player extends Cell {
         int index = (int)((time % (framesRight.length * duration)) / duration);
         return framesRight[index];
     }
-
-    //установка нужных параметров анимации
-    public void setFramesForward(String nameImage, int numberImages) {
-        Image[] framesForward = new Image[numberImages];
-        File image = null;
-        for (int i = 0; i < numberImages; i++) {
-            image = new File("src/maze/Pictures/" + nameImage + ".png");
-            framesForward[i] = new Image(image.toURI().toString());
-        }
-        this.framesForward = framesForward;
+    public Image getFrame(){
+        File image = new File("src/maze/Pictures/YellowFlower/Back/player0.png");
+        return new Image(image.toURI().toString(),64, 100, false, false);
     }
-    public void setFramesBack(String nameImage, int numberImages) {
-        Image[] framesBack = new Image[numberImages];
-        File image = null;
-        for (int i = 0; i < numberImages; i++) {
-            image = new File("src/maze/Pictures/" + nameImage + ".png");
-            framesBack[i] = new Image(image.toURI().toString());
-        }
-        this.framesBack = framesBack;
+    public void Move(int x, int y){
+        this.x += x;
+        this.y += y;
     }
-    public void setFramesLeft(String nameImage, int numberImages) {
-        Image[] framesLeft = new Image[numberImages];
-        File image = null;
-        for (int i = 0; i < numberImages; i++) {
-            image = new File("src/maze/Pictures/" + nameImage + ".png");
-            framesLeft[i] = new Image(image.toURI().toString());
-        }
-        this.framesLeft = framesLeft;
-    }
-    public void setFramesRight(String nameImage, int numberImages) {
-        Image[] framesRight = new Image[numberImages];
-        File image = null;
-        for (int i = 0; i < numberImages; i++) {
-            image = new File("src/maze/Pictures/" + nameImage + ".png");
-            framesRight[i] = new Image(image.toURI().toString());
-        }
-        this.framesRight = framesRight;
-    }
-
-    //получить путь файла
-//    @Override
-//    public String getResource(String fileName) {
-//        return Player.class.getResource(fileName).toString();
-//    }
 }
