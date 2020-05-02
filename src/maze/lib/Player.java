@@ -7,7 +7,7 @@ import maze.Main;
 
 import java.io.File;
 
-public class Player extends Cell {
+public class Player extends GameObject {
     private int numberImages = 4; //количесвто изображений в анимации(фиксированное)
 
     private Image[] framesForward = new Image[numberImages];//кадры движения ВПЕРЁД
@@ -17,7 +17,7 @@ public class Player extends Cell {
     private final double duration = 0.1;                    //частота смены
 
     public Player(int x, int y, int size) {
-        super(x, y, size);
+        //super(x, y, size);
         this.entity = new Rectangle(size*0.64, size, Color.RED);
         this.setAnimation("player");     //устанавливаем анимацию
         setTranslateX(x);
@@ -69,7 +69,6 @@ public class Player extends Cell {
         int index = (int)((time % (framesRight.length * duration)) / duration);
         return framesRight[index];
     }
-    @Override
     public Image getFrame(){
         File image = new File("src/maze/Pictures/YellowFlower/Back/player0.png");
         return new Image(image.toURI().toString(),51, 80, false, false);
