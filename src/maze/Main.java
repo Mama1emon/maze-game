@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import maze.lib.*;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.HashSet;
 
@@ -33,12 +34,14 @@ public class Main extends Application {
     //game objects
     public static Cell[][] map;                     //игровая карта
     private static Player player;                   //игрок
+    public static Prize coin;                      //игровой приз
     //game parameters
     public static final int MAP_SIZE = 10;          //размер игровой карты
     private static final int CELL_SIZE = 80;        //размер игровой клетки
-    private static final int ENTRANCE_X = 95;       //начальные координаты игрока по X
-    private static final int ENTRANCE_Y = 90;       //начальные координаты игрока по Y
+    private static final int ENTRANCE_X = 95;       //координаты начала игры по X(игрока)
+    private static final int ENTRANCE_Y = 90;       //координаты начала игры по Y(игрока)
     public static final int PLAYER_SIZE = 62;       //размер игрока
+    private static final int PRIZE_SIZE = 50;
     //status panel parameters
     private static final int WIDTH_PANEL = 400;
     private static final int HEIGHT_PANEL = 800;
@@ -82,7 +85,11 @@ public class Main extends Application {
             }
         }
         player = new Player(ENTRANCE_X, ENTRANCE_Y, PLAYER_SIZE);
+        int coinLocationX = 655;
+        int coinLocationY = 655;
+        coin = new Prize(coinLocationX, coinLocationY, PRIZE_SIZE);
         //добавляем в иерархию
+        gameRoot.getChildren().add(coin);
         gameRoot.getChildren().add(player);            //добавляем игрока в узел
         appRoot.getChildren().add(statusPanel);
         appRoot.getChildren().add(gameRoot);           //добавляем в корень
@@ -140,6 +147,12 @@ public class Main extends Application {
         }
     }
 
+    private static void renderPrize(double time){
+        if(coin.isVisiblePrize()){
+            graphicsContext.drawImage(coin.getFrame(time), coin.getTranslateX(), coin.getTranslateY());
+        }
+    }
+
     private static void renderStatusPanel(){
         graphicsContext.drawImage(arrowLeft, WIDTH - WIDTH_PANEL + 50, HEIGHT_PANEL - 300);
         graphicsContext.drawImage(arrowRight, WIDTH - 50 - 128 , HEIGHT_PANEL - 300);
@@ -185,8 +198,10 @@ public class Main extends Application {
         // clear canvas
         graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
 
+
         renderStatusPanel();
         renderMap();
+        renderPrize(t);
 
         //Если игрок не движется
         if (!currentlyActiveKeys.contains("RIGHT") && !currentlyActiveKeys.contains("LEFT") && !currentlyActiveKeys.contains("UP")

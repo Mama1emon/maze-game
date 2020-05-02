@@ -106,6 +106,9 @@ public class Player extends GameObject {
                         }
                     }
                 }
+                else if(this.getBoundsInParent().intersects(Main.coin.getBoundsInParent())){
+                    Main.coin.setVisiblePrize(false);
+                }
             }
         }
         setTranslateX(getTranslateX() + x);
