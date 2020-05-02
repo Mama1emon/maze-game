@@ -1,6 +1,7 @@
 package maze.lib;
 
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
@@ -11,7 +12,7 @@ public class Cell extends GameObject {
 
     public Cell(int x, int y, int size) {
         //инициализация
-        this.entity = new Rectangle(size, size);
+        this.entity = new Rectangle(size, size, Color.GREEN);
         this.size = size;
 
 
@@ -19,6 +20,7 @@ public class Cell extends GameObject {
         if((x == 0) || (y == 0) || (x == 720) || (y == 720)) {
             this.isWall = true;
             this.setAnimation("wall");  //установка "стены"
+            getChildren().add(entity);
         }
         //условие для определенных клеток - стенок
         else if ((x == 160 && y == 160) || (x == 240 && y == 160) || (x == 320 && y == 160) || //первый столбей
@@ -35,11 +37,13 @@ public class Cell extends GameObject {
         {
             this.isWall = true;
             this.setAnimation("wall");  //установка "стены"
+            getChildren().add(entity);
         }
         //остальные клетки
         else {
             this.setAnimation("cell");  //установка "поля"
         }
+
     }
 
     //Это стена?

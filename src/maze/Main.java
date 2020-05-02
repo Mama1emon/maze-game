@@ -29,9 +29,9 @@ public class Main extends Application {
     //game parameters
     public static final int MAP_SIZE = 10;          //размер игровой карты
     private static final int CELL_SIZE = 80;         //размер игровой клетки
-    private static final int ENTRANCE_X = 81;
-    private static final int ENTRANCE_Y = 81;
-    private static final int PLAYER_SIZE = 70;
+    private static final int ENTRANCE_X = 90;
+    private static final int ENTRANCE_Y = 90;
+    public static final int PLAYER_SIZE = 62;
     //
     private static HashSet<String> currentlyActiveKeys;//множество, содержащее активные кнопки
     static final long startNanoTime = System.nanoTime();
@@ -50,6 +50,7 @@ public class Main extends Application {
                 map[i][j] = new Cell(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE);
                 map[i][j].setTranslateX(i * CELL_SIZE);
                 map[i][j].setTranslateY(j * CELL_SIZE);
+
                 gameRoot.getChildren().add(map[i][j]); //добавляем игровую карту в узел
             }
         }
@@ -106,30 +107,29 @@ public class Main extends Application {
         graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
         for(int i = 0; i < MAP_SIZE; i++){
             for(int j = 0; j < MAP_SIZE; j++) {
-                graphicsContext.drawImage(map[i][j].getFrame(), map[i][j].getTranslateX(), map[i][j].getTranslateY());
+                //graphicsContext.drawImage(map[i][j].getFrame(), map[i][j].getTranslateX(), map[i][j].getTranslateY());
             }
         }
         if (!currentlyActiveKeys.contains("RIGHT") && !currentlyActiveKeys.contains("LEFT") && !currentlyActiveKeys.contains("UP")
                 && !currentlyActiveKeys.contains("DOWN")) {
-            graphicsContext.drawImage(player.getFrame(), player.getTranslateX() + 8, player.getTranslateY() - 10);
+            graphicsContext.drawImage(player.getFrame(), player.getTranslateX() - 5, player.getTranslateY() - 10);
         }
         System.out.println(player.getTranslateX() + " " + player.getTranslateY());
         if (currentlyActiveKeys.contains("UP")) {
             player.Move(0, -1);
-            graphicsContext.drawImage(player.getFramesForward(t), player.getTranslateX() + 8, player.getTranslateY() - 10);
+            graphicsContext.drawImage(player.getFramesForward(t), player.getTranslateX(), player.getTranslateY()-8);
         }
         else if (currentlyActiveKeys.contains("DOWN")) {
             player.Move(0, 1);
-            graphicsContext.drawImage(player.getFramesBack(t), player.getTranslateX() + 8, player.getTranslateY() - 10);
+            graphicsContext.drawImage(player.getFramesBack(t), player.getTranslateX(), player.getTranslateY() - 10);
         }
         else if (currentlyActiveKeys.contains("LEFT")) {
             player.Move(-1, 0);
-
-            graphicsContext.drawImage(player.getFramesLeft(t), player.getTranslateX(), player.getTranslateY() - 10);
+            graphicsContext.drawImage(player.getFramesLeft(t), player.getTranslateX()-1, player.getTranslateY() - 10);
         }
         else if (currentlyActiveKeys.contains("RIGHT")) {
             player.Move(1, 0);
-            graphicsContext.drawImage(player.getFramesRight(t), player.getTranslateX(), player.getTranslateY() - 10);
+            graphicsContext.drawImage(player.getFramesRight(t), player.getTranslateX()-27, player.getTranslateY() - 10);
         }
         else {
         }

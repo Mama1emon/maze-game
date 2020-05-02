@@ -1,6 +1,7 @@
 package maze.lib;
 
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import maze.Main;
 
@@ -17,7 +18,7 @@ public class Player extends Cell {
 
     public Player(int x, int y, int size) {
         super(x, y, size);
-        this.entity = new Rectangle(size, size);
+        this.entity = new Rectangle(size*0.64, size, Color.RED);
         this.setAnimation("player");     //устанавливаем анимацию
         setTranslateX(x);
         setTranslateY(y);
@@ -44,10 +45,10 @@ public class Player extends Cell {
             File imageRight = new File("src/maze/Pictures/YellowFlower/Right/" + nameImage + i + ".png");
 
             //установка кадров
-            this.framesForward[i] = new Image(imageForward.toURI().toString(), 64, 100, false, false);
-            this.framesBack[i] = new Image(imageBack.toURI().toString(), 64, 100, false, false);
-            this.framesLeft[i] = new Image(imageLeft.toURI().toString(), 92, 100, false, false);
-            this.framesRight[i] = new Image(imageRight.toURI().toString(), 92, 100, false, false);
+            this.framesForward[i] = new Image(imageForward.toURI().toString(), 51, 80, false, false);
+            this.framesBack[i] = new Image(imageBack.toURI().toString(), 51, 80, false, false);
+            this.framesLeft[i] = new Image(imageLeft.toURI().toString(), 73, 80, false, false);
+            this.framesRight[i] = new Image(imageRight.toURI().toString(), 73, 80, false, false);
         }
     }
 
@@ -71,33 +72,40 @@ public class Player extends Cell {
     @Override
     public Image getFrame(){
         File image = new File("src/maze/Pictures/YellowFlower/Back/player0.png");
-        return new Image(image.toURI().toString(),64, 100, false, false);
+        return new Image(image.toURI().toString(),51, 80, false, false);
     }
 
     public void Move(int x, int y){
+        Rectangle rect = new Rectangle(Main.PLAYER_SIZE*0.64, Main.PLAYER_SIZE);
+        rect.setTranslateX(this.getTranslateX()+x);
+        rect.setTranslateY(this.getTranslateY()+y);
+
         for(int i = 0; i < Main.MAP_SIZE; i++){
             for(int j = 0; j < Main.MAP_SIZE; j++){
-                if(this.getBoundsInParent().intersects(Main.map[i][j].getBoundsInParent()) && Main.map[i][j].isWall()){
-                    //System.out.println("!!!!!");
-                    if(y < 0){
-                        setTranslateY(getTranslateY() + 1);
-                        return;
+                if (Main.map[i][j].isWall()) {
+                    if (this.getBoundsInParent().intersects(Main.map[i][j].getBoundsInParent())
+                    || rect.getBoundsInParent().intersects(Main.map[i][j].getBoundsInParent())) {
+                        if (y < 0) {
+                            System.out.println("Ahead wall");
+                            this.setTranslateY(this.getTranslateY() + 2);
+                            return;
+                        }
+                        if (y > 0) {
+                            System.out.println("Back wall");
+                            this.setTranslateY(this.getTranslateY() - 2);
+                            return;
+                        }
+                        if (x < 0) {
+                            System.out.println("Left wall");
+                            this.setTranslateX(this.getTranslateX() + 2);
+                            return;
+                        }
+                        if (x > 0) {
+                            System.out.println("Right wall");
+                            this.setTranslateX(this.getTranslateX() - 2);
+                            return;
+                        }
                     }
-                    else if (y > 0){
-                        setTranslateY(getTranslateY() - 1);
-                        return;
-                    }
-                    if (x < 0){
-                        setTranslateX(getTranslateX() + 1);
-                        return;
-                    }
-                    else if(x > 0){
-                        setTranslateY(getTranslateY() - 1);
-                        return;
-                    }
-                }
-                if(Main.map[i][j].isWall()){
-                    System.out.println("is wall!!!!");
                 }
             }
         }
