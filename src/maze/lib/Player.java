@@ -1,6 +1,8 @@
 package maze.lib;
 
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
+import maze.Main;
 
 import java.io.File;
 
@@ -13,10 +15,13 @@ public class Player extends Cell {
     private Image[] framesRight = new Image[numberImages];  //кадры движения ВПРАВО
     private final double duration = 0.1;                    //частота смены
 
-
-    public Player(int x, int y) {
-        super(x, y);
+    public Player(int x, int y, int size) {
+        super(x, y, size);
+        this.entity = new Rectangle(size, size);
         this.setAnimation("player");     //устанавливаем анимацию
+        setTranslateX(x);
+        setTranslateY(y);
+        getChildren().addAll(entity);
     }
 
     //вернуть количество кадров
@@ -63,12 +68,40 @@ public class Player extends Cell {
         int index = (int)((time % (framesRight.length * duration)) / duration);
         return framesRight[index];
     }
+    @Override
     public Image getFrame(){
         File image = new File("src/maze/Pictures/YellowFlower/Back/player0.png");
         return new Image(image.toURI().toString(),64, 100, false, false);
     }
+
     public void Move(int x, int y){
-        this.x += x;
-        this.y += y;
+        for(int i = 0; i < Main.MAP_SIZE; i++){
+            for(int j = 0; j < Main.MAP_SIZE; j++){
+                if(this.getBoundsInParent().intersects(Main.map[i][j].getBoundsInParent()) && Main.map[i][j].isWall()){
+                    //System.out.println("!!!!!");
+                    if(y < 0){
+                        setTranslateY(getTranslateY() + 1);
+                        return;
+                    }
+                    else if (y > 0){
+                        setTranslateY(getTranslateY() - 1);
+                        return;
+                    }
+                    if (x < 0){
+                        setTranslateX(getTranslateX() + 1);
+                        return;
+                    }
+                    else if(x > 0){
+                        setTranslateY(getTranslateY() - 1);
+                        return;
+                    }
+                }
+                if(Main.map[i][j].isWall()){
+                    System.out.println("is wall!!!!");
+                }
+            }
+        }
+        setTranslateX(getTranslateX() + x);
+        setTranslateY(getTranslateY() + y);
     }
 }

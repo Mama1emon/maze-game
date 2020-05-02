@@ -1,16 +1,20 @@
 package maze.lib;
 
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
+
 import java.io.File;
 
 public class Cell extends GameObject {
     private boolean isWall = false;     //это Стена?
     private Image frame;                //кадр
 
-    public Cell(int x, int y) {
-        //инициализация координат Клетки
-        this.x = x;
-        this.y = y;
+    public Cell(int x, int y, int size) {
+        //инициализация
+        this.entity = new Rectangle(size, size);
+        this.size = size;
+
+
         //условие для граничных клеток - стены
         if((x == 0) || (y == 0) || (x == 720) || (y == 720)) {
             this.isWall = true;
@@ -52,6 +56,6 @@ public class Cell extends GameObject {
     @Override
     public void setAnimation(String nameImage) {
         File image = new File("src/maze/Pictures/" + nameImage + ".jpg");
-        this.frame = new Image(image.toURI().toString(),90, 90, false, false);
+        this.frame = new Image(image.toURI().toString(),80, 80, false, false);
     }
 }
