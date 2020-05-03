@@ -20,7 +20,7 @@ public class Cell extends GameObject {
         if((x == 0) || (y == 0) || (x == 720) || (y == 720)) {
             this.isWall = true;
             this.setAnimation("wall");  //установка "стены"
-            getChildren().add(entity);
+            getChildren().add(entity);  //представляем стену в виде прямоугольника
         }
         //условие для определенных клеток - стенок
         else if ((x == 160 && y == 160) || (x == 240 && y == 160) || (x == 320 && y == 160) || //первый столбей
@@ -37,13 +37,12 @@ public class Cell extends GameObject {
         {
             this.isWall = true;
             this.setAnimation("wall");  //установка "стены"
-            getChildren().add(entity);
+            getChildren().add(entity);  //представляем стену в виде прямоугольника
         }
         //остальные клетки
         else {
             this.setAnimation("cell");  //установка "поля"
         }
-
     }
 
     //Это стена?
@@ -59,7 +58,7 @@ public class Cell extends GameObject {
     //устанавливаем кадр
     @Override
     public void setAnimation(String nameImage) {
-        File image = new File("src/maze/Pictures/" + nameImage + ".jpg");
+        File image = new File("src/maze/Resources/Pictures/" + nameImage + ".jpg");
         this.frame = new Image(image.toURI().toString(),80, 80, false, false);
     }
 }
