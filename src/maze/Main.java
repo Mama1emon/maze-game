@@ -206,27 +206,7 @@ public class Main extends Application {
         }
     }
 
-    @Override
-    public void start(Stage mainStage) {
-        //initial
-
-        mainStage.setTitle("MAZE");             //название окна
-        mainScene = new Scene(createContent()); //создаем сцену
-        mainStage.setScene(mainScene);          //присваиваем сцену окну
-
-        //обработчик нажатий клавиш с клавиатуры
-        prepareActionHandlers();
-
-        //Main "game" loop
-        new AnimationTimer() {
-            public void handle(long currentNanoTime) {
-                tickAndRender(currentNanoTime); //отображение определенной кнопки
-            }
-        }.start();
-
-        mainStage.show();                       //отобразить окно
-    }
-
+    //update
     private static void tickAndRender(long currentNanoTime) {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
         // clear canvas
@@ -261,6 +241,26 @@ public class Main extends Application {
             player.Move(2, 0);
             graphicsContext.drawImage(player.getFramesRight(t), player.getTranslateX()-27, player.getTranslateY() - 15);
         }
+    }
+
+    @Override
+    public void start(Stage mainStage) {
+        //initial
+        mainStage.setTitle("MAZE");             //название окна
+        mainScene = new Scene(createContent()); //создаем сцену
+        mainStage.setScene(mainScene);          //присваиваем сцену окну
+
+        //обработчик нажатий клавиш с клавиатуры
+        prepareActionHandlers();
+
+        //Main "game" loop
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
+                tickAndRender(currentNanoTime); //отображение определенной кнопки
+            }
+        }.start();
+
+        mainStage.show();                       //отобразить окно
     }
 
     public static void main(String[] args) {
