@@ -12,16 +12,6 @@ public class Prize extends GameObject {
     private boolean isVisiblePrize = false;                //светимость приза
     private static final double duration = 0.15;           //частота смены
 
-    //Объект видимый
-    public boolean isVisiblePrize() {
-        return this.isVisiblePrize;
-    }
-
-    //установить видимость
-    public void setVisiblePrize(boolean visible) {
-        isVisiblePrize = visible;
-    }
-
     public Prize(int x, int y, int size) {
         isVisiblePrize = true;  //видимость
         entity = new Rectangle(size, size, Color.GOLD);
@@ -32,6 +22,16 @@ public class Prize extends GameObject {
         getChildren().addAll(entity);
         //устанавливаем анимацию
         setAnimation("coin");
+    }
+
+    //Объект видимый
+    public boolean isVisiblePrize() {
+        return this.isVisiblePrize;
+    }
+
+    //установить видимость
+    public void setVisiblePrize(boolean visible) {
+        isVisiblePrize = visible;
     }
 
     //устанавливаем анимацию

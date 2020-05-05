@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import maze.Controllers.ScreenController;
 import maze.lib.*;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class Main extends Application {
     private static final int HEIGHT = 800;          //Длина окна
     private static Group appRoot;                   //корень компонентов
     private static Pane gameRoot;                   //компонент, содержащий игровые объекты
-    public static boolean isFinishScene = false;
+    public static boolean isFinish = false;         //Финиш?
     //game objects
     public static Cell[][] map;                     //игровая карта
     private static Player player;                   //игрок
@@ -110,6 +111,16 @@ public class Main extends Application {
         appRoot.getChildren().add(gameRoot);           //добавляем в корень
         appRoot.getChildren().add(canvas);             //добавляем в корень
         return appRoot;
+    }
+
+    //загрузчик экранов
+    private static void loadScreen(ScreenController screenController){
+        try {
+            //screenController.addScreen("menu", FXMLLoader.load(Main.class.getResource("Resources/View/menuScene.fxml")));
+            screenController.addScreen("finish", FXMLLoader.load(Main.class.getResource("Resources/View/finishScene.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //возвращает координаты приза
@@ -247,7 +258,13 @@ public class Main extends Application {
     public void start(Stage mainStage) {
         //initial
         mainStage.setTitle("MAZE");             //название окна
+        mainStage.setResizable(false);
+        mainStage.getIcons().add(new Image(new File("src/maze/Resources/Pictures/icon.png").toURI().toString()));
         mainScene = new Scene(createContent()); //создаем сцену
+
+        //контроллер для работы со сценами окна
+        ScreenController screenController = new ScreenController(mainScene);
+        loadScreen(screenController);           //подгружаем сцены
         mainStage.setScene(mainScene);          //присваиваем сцену окну
 
         //обработчик нажатий клавиш с клавиатуры
@@ -257,6 +274,9 @@ public class Main extends Application {
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 tickAndRender(currentNanoTime); //отображение определенной кнопки
+                if(isFinish){                   //финиш?
+                    screenController.activate("finish");//активируем финальную сцену
+                }
             }
         }.start();
 
