@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import maze.Main;
 
-public class finishSceneController {
+public class menuSceneController {
 
     @FXML
     private ResourceBundle resources;
@@ -15,10 +15,16 @@ public class finishSceneController {
     private URL location;
 
     @FXML
-    private Button GoBackButton;
+    private Button firstButton;
 
     @FXML
-    public void GoBackButtonClicked(){
-        Main.screenController.activate("menu");
+    private Button secondButton;
+
+    @FXML
+    private Button thirdButton;
+
+    @FXML
+    public void firstButtonClicked(){
+        //Main.screenController.activate("game");
     }
 }

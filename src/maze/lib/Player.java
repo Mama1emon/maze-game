@@ -118,7 +118,7 @@ public class Player extends GameObject {
                 else if(this.getBoundsInParent().intersects(Main.coin.getBoundsInParent())){
                     Main.coin.setVisiblePrize(false);               //скрываем приз
                     Main.score++;                                   //увеличиваем счет
-                    if(Main.score == 3){
+                    if(Main.score == 1){
                         Main.isFinish = true;
                     }
                     //находим новые координаты для приза

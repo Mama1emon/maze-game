@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finishSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="maze.Controllers.finishSceneController">
    <children>
       <Pane prefHeight="171.0" prefWidth="1200.0" style="-fx-background-color: #000000;">
          <children>
@@ -41,7 +41,7 @@
                   <Font name="Chilanka Regular" size="14.0" />
                </font>
             </Label>
-            <Button id="GoBackButton" layoutX="1004.0" layoutY="97.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Go Back">
+            <Button fx:id="GoBackButton" layoutX="1004.0" layoutY="97.0" mnemonicParsing="false" onAction="#GoBackButtonClicked" prefHeight="30.0" prefWidth="150.0" text="Go Back">
                <font>
                   <Font name="DejaVu Sans Condensed Bold" size="13.0" />
                </font>

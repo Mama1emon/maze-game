@@ -35,6 +35,8 @@ public class Main extends Application {
     private static final int HEIGHT = 800;          //Длина окна
     private static Group appRoot;                   //корень компонентов
     private static Pane gameRoot;                   //компонент, содержащий игровые объекты
+    public static ScreenController screenController;//контроллер управления экранами
+    public static boolean isStart = true;
     public static boolean isFinish = false;         //Финиш?
     //game objects
     public static Cell[][] map;                     //игровая карта
@@ -116,7 +118,9 @@ public class Main extends Application {
     //загрузчик экранов
     private static void loadScreen(ScreenController screenController){
         try {
-            //screenController.addScreen("menu", FXMLLoader.load(Main.class.getResource("Resources/View/menuScene.fxml")));
+            screenController.addScreen("menu", FXMLLoader.load(Main.class.getResource("Resources/View/menuScene.fxml")));
+            screenController.addScreen("start", FXMLLoader.load(Main.class.getResource("Resources/View/startScene.fxml")));
+            //screenController.addScreen("retry", FXMLLoader.load(Main.class.getResource("Resources/View/retryScene.fxml")));
             screenController.addScreen("finish", FXMLLoader.load(Main.class.getResource("Resources/View/finishScene.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
@@ -255,17 +259,17 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage mainStage) {
+    public void start(Stage mainStage) throws IOException {
         //initial
         mainStage.setTitle("MAZE");             //название окна
-        mainStage.setResizable(false);
+        mainStage.setResizable(false);          //запрет на изменение размера экрана
         mainStage.getIcons().add(new Image(new File("src/maze/Resources/Pictures/icon.png").toURI().toString()));
-        mainScene = new Scene(createContent()); //создаем сцену
+        mainScene = new Scene(createContent()); //создаем главную сцену игры
 
         //контроллер для работы со сценами окна
-        ScreenController screenController = new ScreenController(mainScene);
+        screenController = new ScreenController(mainScene);
         loadScreen(screenController);           //подгружаем сцены
-        mainStage.setScene(mainScene);          //присваиваем сцену окну
+        mainStage.setScene(mainScene);
 
         //обработчик нажатий клавиш с клавиатуры
         prepareActionHandlers();
@@ -276,6 +280,7 @@ public class Main extends Application {
                 tickAndRender(currentNanoTime); //отображение определенной кнопки
                 if(isFinish){                   //финиш?
                     screenController.activate("finish");//активируем финальную сцену
+                    isFinish = false;
                 }
             }
         }.start();
