@@ -21,36 +21,39 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import maze.Controllers.ScreenController;
 import maze.lib.*;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.HashSet;
 
 public class Main extends Application {
     //application parameters
-    public static Scene mainScene;                 //главная сцена
+    public static Scene startScene;
+    public static Scene gameScene;                  //главная сцена
+    public static Scene menuScene;
+    public static Scene finishScene;
+    public static Group appRoot = new Group();
+    public static Pane gameRoot;
     private static GraphicsContext graphicsContext; //позволяет накладывать графику
     private static final int WIDTH = 1200;          //Ширина окна
     private static final int HEIGHT = 800;          //Длина окна
-    private static Group appRoot;                   //корень компонентов
-    private static Pane gameRoot;                   //компонент, содержащий игровые объекты
-    public static ScreenController screenController;//контроллер управления экранами
     public static boolean isStart = true;
+    public static boolean isMenu = false;
+    public static boolean isGame = false;
     public static boolean isFinish = false;         //Финиш?
     //game objects
     public static Cell[][] map;                     //игровая карта
-    private static Player player;                   //игрок
+    public static Player player;                   //игрок
     public static Prize coin;                       //игровой приз
     //game parameters
     public static final int MAP_SIZE = 10;          //размер игровой карты
     public static final int CELL_SIZE = 80;         //размер игровой клетки
-    private static final int ENTRANCE_X = 95;       //координаты начала игры по X(игрока)
-    private static final int ENTRANCE_Y = 90;       //координаты начала игры по Y(игрока)
+    public static final int ENTRANCE_X = 95;       //координаты начала игры по X(игрока)
+    public static final int ENTRANCE_Y = 90;       //координаты начала игры по Y(игрока)
     public static final int PLAYER_SIZE = 62;       //размер игрока
-    private static final int PRIZE_SIZE = 50;       //размер приза
-    private static int PRIZE_START_X;               //стартовая позиция приза по X
-    private static int PRIZE_START_Y;               //стартовая позиция приза по Y
+    public static final int PRIZE_SIZE = 50;       //размер приза
+    public static int PRIZE_START_X;               //стартовая позиция приза по X
+    public static int PRIZE_START_Y;               //стартовая позиция приза по Y
     public static int score = 0;                    //игровой счет
     //status panel parameters
     private static final int WIDTH_PANEL = 400;     //ширина дополнительной панели
@@ -72,7 +75,7 @@ public class Main extends Application {
     //создание иерархии узлов приложения
     private static Parent createContent(){
         //initial
-        appRoot = new Group();
+        //корень компонентов
         Canvas canvas = new Canvas(WIDTH, HEIGHT);      //чистый холст
         graphicsContext = canvas.getGraphicsContext2D();//позволяем отображать графические объекты
         //создаем доплнительную панель
@@ -92,51 +95,23 @@ public class Main extends Application {
         //создаем игровые объекты
         gameRoot = new Pane();
         gameRoot.setPrefSize(800, 800);          //устанавливаем размер
-        map = new Cell[MAP_SIZE][MAP_SIZE];
-        for(int i = 0; i < MAP_SIZE; i++){
-            for(int j = 0; j < MAP_SIZE; j++){
-                map[i][j] = new Cell(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE);
-                map[i][j].setTranslateX(i * CELL_SIZE);
-                map[i][j].setTranslateY(j * CELL_SIZE);
-
-                gameRoot.getChildren().add(map[i][j]); //добавляем игровую клетку в узел
-            }
-        }
-        player = new Player(ENTRANCE_X, ENTRANCE_Y, PLAYER_SIZE);
-
-        getStartPrizeLocation();    //получаем координаты приза
-        coin = new Prize(PRIZE_START_X, PRIZE_START_Y, PRIZE_SIZE);
-        //добавляем в иерархию
-        gameRoot.getChildren().add(coin);
-        gameRoot.getChildren().add(player);            //добавляем игрока в узел
-        appRoot.getChildren().add(statusPanel);
+        //компонент, содержащий игровые объекты
         appRoot.getChildren().add(gameRoot);           //добавляем в корень
+        appRoot.getChildren().add(statusPanel);
         appRoot.getChildren().add(canvas);             //добавляем в корень
         return appRoot;
     }
 
     //загрузчик экранов
-    private static void loadScreen(ScreenController screenController){
+    private static void loadScreen(){
         try {
-            screenController.addScreen("menu", FXMLLoader.load(Main.class.getResource("Resources/View/menuScene.fxml")));
-            screenController.addScreen("start", FXMLLoader.load(Main.class.getResource("Resources/View/startScene.fxml")));
-            //screenController.addScreen("retry", FXMLLoader.load(Main.class.getResource("Resources/View/retryScene.fxml")));
-            screenController.addScreen("finish", FXMLLoader.load(Main.class.getResource("Resources/View/finishScene.fxml")));
+            startScene = new Scene(FXMLLoader.load(Main.class.getResource("Resources/View/startScene.fxml")));
+            menuScene = new Scene(FXMLLoader.load(Main.class.getResource("Resources/View/menuScene.fxml")));
+            gameScene = new Scene(createContent());
+            finishScene = new Scene(FXMLLoader.load(Main.class.getResource("Resources/View/finishScene.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    //возвращает координаты приза
-    private static void getStartPrizeLocation(){
-        int prizeNewX = (int) (Math.random() * 10);
-        int prizeNewY = (int) (Math.random() * 10);
-        while(Main.map[prizeNewX][prizeNewY].isWall()){
-            prizeNewX = (int) (Math.random() * 10);
-            prizeNewY = (int) (Math.random() * 10);
-        }
-        PRIZE_START_X = prizeNewX * CELL_SIZE + 15;
-        PRIZE_START_Y = prizeNewY * CELL_SIZE + 15;
     }
 
     //загрузка изображений для дполнительной панели
@@ -169,14 +144,14 @@ public class Main extends Application {
     private static void prepareActionHandlers() {
         // use a set so duplicates are not possible
         currentlyActiveKeys = new HashSet<String>();
-        mainScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 currentlyActiveKeys.add(event.getCode().toString());
             }
         });
 
-        mainScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        gameScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 currentlyActiveKeys.remove(event.getCode().toString());
@@ -262,14 +237,11 @@ public class Main extends Application {
     public void start(Stage mainStage) throws IOException {
         //initial
         mainStage.setTitle("MAZE");             //название окна
+        mainStage.setHeight(HEIGHT);
+        mainStage.setWidth(WIDTH);
         mainStage.setResizable(false);          //запрет на изменение размера экрана
         mainStage.getIcons().add(new Image(new File("src/maze/Resources/Pictures/icon.png").toURI().toString()));
-        mainScene = new Scene(createContent()); //создаем главную сцену игры
-
-        //контроллер для работы со сценами окна
-        screenController = new ScreenController(mainScene);
-        loadScreen(screenController);           //подгружаем сцены
-        mainStage.setScene(mainScene);
+        loadScreen();
 
         //обработчик нажатий клавиш с клавиатуры
         prepareActionHandlers();
@@ -277,14 +249,23 @@ public class Main extends Application {
         //Main "game" loop
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                tickAndRender(currentNanoTime); //отображение определенной кнопки
-                if(isFinish){                   //финиш?
-                    screenController.activate("finish");//активируем финальную сцену
-                    isFinish = false;
+                if (isStart) {
+                    mainStage.setScene(startScene);
+                }
+                if (isMenu) {
+                    mainStage.setScene(menuScene);
+                }
+                if (isGame) {
+                    mainStage.setScene(gameScene);
+                    tickAndRender(currentNanoTime); //отображение определенной кнопки
+                }
+                if (isFinish) {                   //финиш?
+                    score = 0;
+                    currentlyActiveKeys.clear();
+                    mainStage.setScene(finishScene);
                 }
             }
         }.start();
-
         mainStage.show();                       //отобразить окно
     }
 

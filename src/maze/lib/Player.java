@@ -1,7 +1,5 @@
 package maze.lib;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -21,7 +19,7 @@ public class Player extends GameObject {
 
     public Player(int x, int y, int size) {
         //super(x, y, size);
-        this.entity = new Rectangle(size*0.64, size, Color.RED);
+        this.entity = new Rectangle(size*0.64, size);
         this.setAnimation("player");     //устанавливаем анимацию
         //устанавливаем координаты
         setTranslateX(x);
@@ -118,7 +116,8 @@ public class Player extends GameObject {
                 else if(this.getBoundsInParent().intersects(Main.coin.getBoundsInParent())){
                     Main.coin.setVisiblePrize(false);               //скрываем приз
                     Main.score++;                                   //увеличиваем счет
-                    if(Main.score == 1){
+                    if(Main.score == 10){
+                        Main.isGame = false;
                         Main.isFinish = true;
                     }
                     //находим новые координаты для приза

@@ -10,37 +10,17 @@ public class Cell extends GameObject {
     private boolean isWall = false;     //это Стена?
     private Image frame;                //кадр
 
-    public Cell(int x, int y, int size) {
+    public Cell(int x, int y, int size, int type) {
         //инициализация
         this.entity = new Rectangle(size, size, Color.GREEN);
         this.size = size;
 
-
-        //условие для граничных клеток - стены
-        if((x == 0) || (y == 0) || (x == 720) || (y == 720)) {
+        if(type == 1){
             this.isWall = true;
             this.setAnimation("wall");  //установка "стены"
             getChildren().add(entity);  //представляем стену в виде прямоугольника
         }
-        //условие для определенных клеток - стенок
-        else if ((x == 160 && y == 160) || (x == 240 && y == 160) || (x == 320 && y == 160) || //первый столбей
-                 (x == 480 && y == 160) || (x == 560 && y == 160) ||
-                 (x == 400 && y == 240) ||                                                     //второй
-                 (x == 160 && y == 320) || (x == 320 && y == 320) || (x == 480 && y == 320) ||
-                 (x == 560 && y == 320) ||                                                     //третий
-                 (x == 240 && y == 400) || (x == 560 && y == 400) ||                           //четвертый
-                 (x == 80  && y == 480) || (x == 240 && y == 480) || (x == 400 && y == 480) || //пятый
-                 (x == 640 && y == 480) ||
-                 (x == 240 && y == 560) || (x == 400 && y == 560) || (x == 480 && y == 560) || //шестой
-                 (x == 640 && y == 560) ||
-                 (x == 80  && y == 640) || (x == 400 && y == 640))                             //седьмой
-        {
-            this.isWall = true;
-            this.setAnimation("wall");  //установка "стены"
-            getChildren().add(entity);  //представляем стену в виде прямоугольника
-        }
-        //остальные клетки
-        else {
+        else if(type == 0){
             this.setAnimation("cell");  //установка "поля"
         }
     }

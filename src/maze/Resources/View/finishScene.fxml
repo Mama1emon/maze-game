@@ -41,9 +41,9 @@
                   <Font name="Chilanka Regular" size="14.0" />
                </font>
             </Label>
-            <Button fx:id="GoBackButton" layoutX="1004.0" layoutY="97.0" mnemonicParsing="false" onAction="#GoBackButtonClicked" prefHeight="30.0" prefWidth="150.0" text="Go Back">
+            <Button fx:id="GoBackButton" layoutX="1004.0" layoutY="100.0" mnemonicParsing="false" onAction="#GoBackButtonClicked" prefHeight="54.0" prefWidth="150.0" style="-fx-border-radius: 25; -fx-background-color: #ffff; -fx-border-color: #000000; -fx-border-width: 4;" text="Go Back">
                <font>
-                  <Font name="DejaVu Sans Condensed Bold" size="13.0" />
+                  <Font name="Keraleeyam" size="22.0" />
                </font>
             </Button>
             <ImageView fitHeight="86.0" fitWidth="84.0" layoutX="1047.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">

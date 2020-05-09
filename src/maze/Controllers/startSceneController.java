@@ -1,8 +1,5 @@
 package maze.Controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,21 +8,16 @@ import javafx.util.Duration;
 import maze.Main;
 
 public class startSceneController {
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
     @FXML
     private Button runButton;
 
     @FXML
     public void runButtonClicked(){
-        Main.screenController.activate("menu"); //активировать экран Меню
+        Main.isStart = false; //активировать экран Меню
+        Main.isMenu = true;
     }
 
+    //анимация при наведении курсором на кнопку
     @FXML
     public void runButtonMouseEntered(){
         ColorAdjust colorAdjust = new ColorAdjust();
@@ -43,6 +35,5 @@ public class startSceneController {
             fadeInTimeline.setAutoReverse(true);
             fadeInTimeline.play();
         });
-
     }
 }
