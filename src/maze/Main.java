@@ -1,3 +1,6 @@
+/*
+ * Главный класс - приложение
+ */
 package maze;
 
 import javafx.animation.AnimationTimer;
@@ -25,36 +28,39 @@ import maze.lib.*;
 
 import java.io.*;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Main extends Application {
     //application parameters
-    public static Scene startScene;
-    public static Scene gameScene;                  //главная сцена
-    public static Scene menuScene;
-    public static Scene finishScene;
-    public static Group appRoot = new Group();
-    public static Pane gameRoot;
+    public static Scene startScene;                 //стартовый экран
+    public static Scene gameScene;                  //игровой экран
+    public static Scene menuScene;                  //экран меню
+    public static Scene finishScene;                //финальная сцена
+    public static Group appRoot = new Group();      //корень игрового экрана
+    public static Pane gameRoot;                    //узел игрового экрана, отвечающий за логику экрана
     private static GraphicsContext graphicsContext; //позволяет накладывать графику
     private static final int WIDTH = 1200;          //Ширина окна
     private static final int HEIGHT = 800;          //Длина окна
-    public static boolean isStart = true;
+    private static final int GAME_WIDTH = 800;      //ширина игрового пространства
+    private static final int GAME_HEIGHT = 800;     //длина игрового пространства
+    public static boolean isStart = true;           //флаги каждой сцены
     public static boolean isMenu = false;
     public static boolean isGame = false;
-    public static boolean isFinish = false;         //Финиш?
+    public static boolean isFinish = false;
     //game objects
-    public static Cell[][] map;                     //игровая карта
+    public static Cell[][] map;                    //игровая карта
     public static Player player;                   //игрок
-    public static Prize coin;                       //игровой приз
+    public static Prize coin;                      //игровой приз
     //game parameters
-    public static final int MAP_SIZE = 10;          //размер игровой карты
-    public static final int CELL_SIZE = 80;         //размер игровой клетки
+    public static final int MAP_SIZE = 10;         //размер игровой карты
+    public static final int CELL_SIZE = 80;        //размер игровой клетки
     public static final int ENTRANCE_X = 95;       //координаты начала игры по X(игрока)
     public static final int ENTRANCE_Y = 90;       //координаты начала игры по Y(игрока)
-    public static final int PLAYER_SIZE = 62;       //размер игрока
+    public static final int PLAYER_SIZE = 62;      //размер игрока
     public static final int PRIZE_SIZE = 50;       //размер приза
     public static int PRIZE_START_X;               //стартовая позиция приза по X
     public static int PRIZE_START_Y;               //стартовая позиция приза по Y
-    public static int score = 0;                    //игровой счет
+    public static int score = 0;                   //игровой счет
     //status panel parameters
     private static final int WIDTH_PANEL = 400;     //ширина дополнительной панели
     private static final int HEIGHT_PANEL = 800;    //высота дополнительной панели
@@ -69,8 +75,8 @@ public class Main extends Application {
     private static Image arrowActiveRight;
     private static Image iconLabelScore;
 
-    private static HashSet<String> currentlyActiveKeys;//множество, содержащее активные кнопки
-    static final long startNanoTime = System.nanoTime();
+    private static Set<String> currentlyActiveKeys;//множество, содержащее активные кнопки
+    private static final long startNanoTime = System.nanoTime();//время начала программы
 
     //создание иерархии узлов приложения
     private static Parent createContent(){
@@ -92,10 +98,10 @@ public class Main extends Application {
         labelScore.setTranslateX(20);
         labelScore.setTranslateY(20);
         statusPanel.getChildren().addAll(labelScore);
-        //создаем игровые объекты
+        //инициализируем узел
         gameRoot = new Pane();
-        gameRoot.setPrefSize(800, 800);          //устанавливаем размер
-        //компонент, содержащий игровые объекты
+        gameRoot.setPrefSize(GAME_WIDTH, GAME_HEIGHT); //устанавливаем размер
+        //добавляем в иерархию игрового экрана
         appRoot.getChildren().add(gameRoot);           //добавляем в корень
         appRoot.getChildren().add(statusPanel);
         appRoot.getChildren().add(canvas);             //добавляем в корень
@@ -114,7 +120,7 @@ public class Main extends Application {
         }
     }
 
-    //загрузка изображений для дполнительной панели
+    //загрузка изображений для дополнительной панели
     private static void loadImage(){
         //image for status panel
         File image = new File("src/maze/Resources/Pictures/StatusPanel/arrowLeft.png");
@@ -201,7 +207,7 @@ public class Main extends Application {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
         // clear canvas
         graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
-        //визуализация окна
+        //визуализация игрового пространства
         renderStatusPanel();
         renderMap();
         renderPrize(t);
@@ -234,13 +240,15 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage mainStage) throws IOException {
+    public void start(Stage mainStage) {
         //initial
         mainStage.setTitle("MAZE");             //название окна
-        mainStage.setHeight(HEIGHT);
+        mainStage.setHeight(HEIGHT);            //расположение окна
         mainStage.setWidth(WIDTH);
         mainStage.setResizable(false);          //запрет на изменение размера экрана
         mainStage.getIcons().add(new Image(new File("src/maze/Resources/Pictures/icon.png").toURI().toString()));
+
+        //подгрузка всех экранов
         loadScreen();
 
         //обработчик нажатий клавиш с клавиатуры
@@ -249,24 +257,25 @@ public class Main extends Application {
         //Main "game" loop
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                if (isStart) {
+                //обработчик этапов приложения
+                if (isStart) {                     //старт?
                     mainStage.setScene(startScene);
                 }
-                if (isMenu) {
+                if (isMenu) {                      //меню?
                     mainStage.setScene(menuScene);
                 }
-                if (isGame) {
+                if (isGame) {                      //игра?
                     mainStage.setScene(gameScene);
-                    tickAndRender(currentNanoTime); //отображение определенной кнопки
+                    tickAndRender(currentNanoTime);
                 }
-                if (isFinish) {                   //финиш?
-                    score = 0;
-                    currentlyActiveKeys.clear();
+                if (isFinish) {                    //финиш?
+                    score = 0;                     //обнуляем счет
+                    currentlyActiveKeys.clear();   //очищаем множество активных клавиш
                     mainStage.setScene(finishScene);
                 }
             }
         }.start();
-        mainStage.show();                       //отобразить окно
+        mainStage.show();                          //отобразить окно
     }
 
     public static void main(String[] args) {

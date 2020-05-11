@@ -1,9 +1,11 @@
+/*
+ * Игровой объект - клетка
+ */
 package maze.lib;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
 import java.io.File;
 
 public class Cell extends GameObject {
@@ -14,7 +16,12 @@ public class Cell extends GameObject {
         //инициализация
         this.entity = new Rectangle(size, size, Color.GREEN);
         this.size = size;
-
+        //установка расположения клетки
+        setTranslateX(x);
+        setTranslateY(y);
+        /*
+         * Если 0 - земля, 1 - стена
+         */
         if(type == 1){
             this.isWall = true;
             this.setAnimation("wall");  //установка "стены"

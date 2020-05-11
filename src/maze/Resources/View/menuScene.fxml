@@ -22,7 +22,7 @@
                   <Font name="Karumbi" size="71.0" />
                </font>
             </Button>
-            <Button fx:id="thirdButton" mnemonicParsing="false" prefHeight="92.0" prefWidth="159.0" style="-fx-background-color: #FFFF; -fx-border-color: #000000; -fx-border-radius: 25; -fx-border-width: 4;" text="3">
+            <Button fx:id="thirdButton" mnemonicParsing="false" onAction="#thirdButtonClicked" prefHeight="92.0" prefWidth="159.0" style="-fx-background-color: #FFFF; -fx-border-color: #000000; -fx-border-radius: 25; -fx-border-width: 4;" text="3">
                <font>
                   <Font name="Karumbi" size="71.0" />
                </font>
@@ -53,10 +53,5 @@
             </Label>
          </children>
       </Pane>
-      <ImageView fitHeight="162.0" fitWidth="170.0" layoutX="696.0" layoutY="400.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Pictures/error.png" />
-         </image>
-      </ImageView>
    </children>
 </AnchorPane>

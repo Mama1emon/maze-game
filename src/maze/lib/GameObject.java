@@ -1,3 +1,6 @@
+/*
+ * Абстрактный класс - родитель игровых объектов
+ */
 package maze.lib;
 
 import javafx.scene.layout.Pane;
